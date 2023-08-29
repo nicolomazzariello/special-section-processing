@@ -1,122 +1,159 @@
-# Contenuto
-Questi script permettono l'analisi degli abstract degli articoli delle Special Section della rivista scientifica Transaction on Industrial Informatics, abstract elaborati con `slr-kit`. 
-Ogni script può essere eseguito in maniera indipendente dagli altri.
-Gli script sono presentati nel corretto ordine di esecuzione che ci si aspetta durante il workflow.
+# Content
+
+The scripts in this repository allow the analysis of the abstracts of the articles of the Special Sections of a scientific journal.
+The abstracts are processed with the [`slr-kit`](https://github.com/robolab-pavia/slr-kit) tool.
+Each script can be run independently of the others.
+The scripts are presented in the order of execution expected during the workflow.
 
 ## `Scopus2csv.py`
-- AZIONE: converte un file CSV scaricato da Scopus in un file CSV compatibile con `slr-kit`
-- INPUT: file CSV scaricato da Scopus
-- OUTPUT: file CSV denominato `slr-kit_abstracts.csv`
 
-Argomenti posizionali:
-* `input_file`: CSV scaricato da Scopus
+Converts a CSV file exported from Scopus into a `slr-kit` compatible CSV file.
 
-### Esempio di utilizzo
+* INPUT: CSV file exported from Scopus
+* OUTPUT: CSV file `slr-kit_abstracts.csv` in `slr-kit` compatible format
+
+Positional arguments:
+
+* `input_file`: CSV exported from Scopus
+
+Example of usage:
+
 ```
 python Scopus2csv.py Scopus.csv
 ```
 
 ## `PreprocBySpecSec.py`
-- AZIONE: divide gli articoli preprocessati da `slr-kit` in base alla Special Section di appartenenza
-- INPUT: file CSV contenente articoli e nomi delle Special Section; file CSV contenente gli articoli preprocessati da `slr-kit`
-- OUTPUT: insieme di cartelle contenenti gli articoli preprocessati divisi per Special Section; file eseguibile denominato `run_all_process.bat` per poter eseguire il postprocessamento degli articoli e successivamente LDA (postprocessamneto e LDA sono forniti da `slr-kit`)
 
-Argomenti posizionali:
-* `spec_sec_csv`: file CSV contenente articoli e nomi delle Special Section
-* `preproc_file`: file CSV contenente gli articoli preprocessati di tutte le Special Section
+Splits the articles preprocessed by `slr-kit` according to the Special Section they belong to.
 
-### Esempio di utilizzo
+- INPUT: CSV file containing articles and names of the Special Sections; CSV file containing the items preprocessed by `slr-kit`
+- OUTPUT: set of folders containing the preprocessed articles divided by Special Section; executable file named `run_all_process.bat` to be able to postprocess articles and then LDA (postprocessing and LDA are provided by `slr-kit`)
+
+Positional arguments:
+
+* `spec_sec_csv`: CSV file containing articles and names of the Special Sections
+* `preproc_file`: CSV file containing the preprocessed articles of all the Special Sections
+
+Example of usage:
+
 ```
 python PreprocBySpecSec.py Spec_Sec.csv SpecSec_preproc.csv
 ```
 
 ## `SpecSecFake.py`
-- AZIONE: crea Special Section fake (di test) a partire dagli articoli postprocessati da `slr-kit`
-- INPUT: cartelle contenenti gli articoli postprocessati divisi per Special Section; file CSV contenente gli articoli postprocessati di tutte le Special Section
-- OUTPUT: cartelle contenenti gli articoli postprocessati delle Special Section fake
 
-Argomenti posizionali:
-* `directories_special_section`: cartelle contenenti tutti gli articoli postprocessati divisi per Special Section
-* `postprocess_file`: file CSV contenente gli articoli postprocessati di tutte le Special Section
+Create fake (test) Special Sections from articles postprocessed by `slr-kit`.
 
-Argomenti opzionali:
-* `-fake`: numero di Special Section fake che si vogliono creare (se non specificato impostato di default a 200)
+* INPUT: folders containing the postprocessed articles divided by Special Section; CSV file containing the postprocessed articles of all the Special Sections
+* OUTPUT: folders containing the postprocessed articles of the fake Special Sections
 
-### Esempio di utilizzo
+Positional arguments:
+
+* `directories_special_section`: folders containing all postprocessed articles divided by Special Section
+* `postprocess_file`: CSV file containing the postprocessed articles of all the Special Sections
+
+Positional arguments:
+
+* `-fake`: number of fake Special Sections to be created; default = 200
+
+Example of usage:
+
 ```
 python SpecSecFake.py (Get-ChildItem -Path "SpecSec\SpecSec*").FullName SpecSec_postproc.csv
 ```
 
 ## `SpecSecHist.py`
-- AZIONE: crea un istogramma che illustra il numero di articoli presenti in ogni Special Section o Special Section fake
-- INPUT: cartelle contenenti gli articoli postprocessati divisi per Special Section o Special Section fake
-- OUTPUT: istrogramma in formato png
 
-Argomenti posizionali:
-* `directories`: elenco di cartelle di Special Section o Special Section fake
+Creates a histogram illustrating the number of items in each Special Section or fake Special Section.
 
-### Esempio di utilizzo
+- INPUT: folders containing the postprocessed articles divided by Special Section or Special Section fake
+- OUTPUT: histogram in PNG format
+
+Positional arguments:
+
+* `directories`: list of directories of Special Sections or fake Special Sections
+
+Example of usage:
+
 ```
 python SpecSecHist.py (Get-ChildItem -Path "SpecSec\SpecSec*").FullName
 python SpecSecHist.py (Get-ChildItem -Path "SpecSecFake\SpecSecFake*").FullName
 ```
+
 ## `SpecSecGraph.py`
-- AZIONE: crea un grafo per ogni Special Section o Special Section fake
-- INPUT: cartelle contenenti gli articoli postprocessati divisi per Special Section o Special Section fake
-- OUTPUT: grafi in formato png
 
-Il peso dei lati dei grafi è dato dal numero di parole che hanno in comune gli abstract postprocessati di due articoli.
+Creates a graph for each Special Section or Special Section fake.
 
-Argomenti posizionali:
-* `directories`: elenco di cartelle contenenti gli articoli postprocessati divisi per Special Section o Special Section fake
+- INPUT: folders containing the postprocessed articles divided by Special Section or Special Section fake
+- OUTPUT: graphs in png format
 
-### Esempio di utilizzo
+The weight of the sides of the graphs is given by the number of words that the postprocessed abstracts of two articles have in common.
+
+Positional arguments:
+
+* `directories`: list of folders containing postprocessed articles divided by Special Section or Special Section fake
+
+Example of usage:
+
 ```
 python SpecSecGraph.py (Get-ChildItem -Path "SpecSec\SpecSec*").FullName
 python SpecSecGraph.py (Get-ChildItem -Path "SpecSecFake\SpecSecFake*").FullName
 ```
 
 ## `SpecSecElab.py`
-- AZIONE: calcola i parametri di coerenza tra gli articoli di Special Section e Special Section fake
-- INPUT: cartelle contenenti gli articoli postprocessati divisi per Special Section; cartelle contenenti gli articoli postprocessati divisi per Special Section fake
-- OUTPUT: file CSV denominato `Spec_Sec_metrics.csv` contenente i parametri di coerenza tra gli articoli delle Special Section; file CSV denominato `Spec_Sec_fake_metrics.csv` contenente i parametri di coerenza tra gli articoli delle Special Section fake
 
-Argomenti posizionali:
-* `--spec_sec`: elenco di cartelle delle Special Section
-* `--spec_sec_fake`: elenco di cartelle delle Special Section fake
+Calculates the parameters of coherence between the articles of Special Section and Special Section fake.
 
-Argomenti opzionali:
-* `-th`: valore (numero intero) della soglia (numero di parole che devono almeno avere in comune due articoli all'interno del loro abstract postprocessato) per il calcolo della coerenza (se non specificato impostato di default a 10)
+* INPUT: folders containing the postprocessed articles divided by Special Section; folders containing the postprocessed articles divided by Special Section fake
+* OUTPUT: CSV file called `Spec_Sec_metrics.csv` containing the parameters of coherence between the articles of the Special Sections; CSV file called `Spec_Sec_fake_metrics.csv` containing the parameters of coherence between the articles of the fake Special Sections
 
-### Esempio di utilizzo
+Positional arguments:
+
+* `--spec_sec`: list of Special Section folders
+* `--spec_sec_fake`: directory listing of fake Special Sections
+
+Positional arguments:
+
+* `-th`: integer value of the threshold for calculating the coherence, i.e., number of words that two articles must have at least in common within their postprocessed abstract (if not specified, set to 10 by default)
+
+Example of usage:
+
 ```
 python SpecSecElab.py --spec_sec (Get-ChildItem -Path "SpecSec\SpecSec*").FullName --spec_sec_fake (Get-ChildItem -Path "SpecSecFake\SpecSecFake*").FullName
 ```
 
 ## `SpecSecBoxPlot.py`
-- AZIONE: crea un box plot per le Special Section e un box plot per le Special Section fake
-- INPUT: file CSV per le Special Section generato da `SpecSecElab.py`; file CSV per le Special Section fake generato da `SpecSecElab.py`
-- OUTPUT: box plot denominati `SpecSec_BoxPlot.png` e `SpecSecFake_BoxPlot.png`
 
-Argomenti posizionali:
-* `spec_sec_metrics`: file CSV con i parametri di coerenza delle Special Section
-* `spec_sec_fake_metrics`: file CSV con i parametri di coerenza delle Special Section fake
+Creates a box plot for the Special Sections and a box plot for the fake Special Sections.
 
-### Esempio di utilizzo
+- INPUT: CSV file for the Special Sections generated by `SpecSecElab.py`; CSV file for fake Special Sections generated by `SpecSecElab.py`
+- OUTPUT: box plots named `SpecSec_BoxPlot.png` and `SpecSecFake_BoxPlot.png`
+
+Positional arguments:
+
+* `spec_sec_metrics`: CSV file with the coherence parameters of the Special Sections
+* `spec_sec_fake_metrics`: CSV file with the coherence parameters of the fake Special Sections
+
+Example of usage:
+
 ```
 python SpecSecBoxPlot.py Spec_Sec_metrics.csv Spec_Sec_fake_metrics.csv
 ```
 
 ## `SpecSecPlot.py`
-- ACTION: crea un grafico con due curve che mettono a confronto i valori medi di coerenza di Special Section e Special Section fake
-- INPUT: file CSV per le Special Section generato da `SpecSecElab.py`; file CSV per le Special Section fake generato da `SpecSecElab.py`
-- OUTPUT: grafico denominato `Plot.png`
 
-Argomenti posizionali:
-* `spec_sec_metrics`: file CSV con i parametri di coerenza delle Special Section
-* `spec_sec_fake_metrics`: file CSV con i parametri di coerenza delle Special Section fake
+Creates a graph with two curves comparing the average coherence values of Special Section and fake Special Section.
 
-### Esempio di utilizzo
+* INPUT: CSV file for the Special Sections generated by `SpecSecElab.py`; CSV file for fake Special Sections generated by `SpecSecElab.py`
+* OUTPUT: graph named `Plot.png`
+
+Positional arguments:
+
+* `spec_sec_metrics`: CSV file with the coherence parameters of the Special Sections
+* `spec_sec_fake_metrics`: CSV file with the coherence parameters of the fake Special Sections
+
+Example of usage:
+
 ```
 python SpecSecPlot.py Spec_Sec_metrics.csv Spec_Sec_fake_metrics.csv
 ```
