@@ -8,10 +8,10 @@ import argparse
 def titles_partition(spec_sec_file):
     titles = []
 
-    csv_file = pd.read_csv(spec_sec_file)
-    grouped_spec_sec = csv_file.groupby('Special Section')
+    csv_file = pd.read_csv(spec_sec_file, sep='\t')
+    grouped_spec_sec = csv_file.groupby('final_track')
     for _, group in grouped_spec_sec:
-        titles.append([re.sub('[^a-zA-Z]', '', title.strip().lower()) for title in group['Title'].values.tolist()])
+        titles.append([re.sub('[^a-zA-Z]', '', title.strip().lower()) for title in group['title'].values.tolist()])
 
     return titles
 
@@ -33,7 +33,7 @@ def preproc_partition(titles, preproc_file):
 
     return preproc_titles_partition
 
-# Creazione di sottocartelle per ogni Special Section e dividione degli articoli preprocessati nelle sottocartelle
+# Creazione di sottocartelle per ogni Special Section e divisione degli articoli preprocessati nelle sottocartelle
 def create_subdir(preproc_titles):
 
     keys = preproc_titles[0][0].keys()
@@ -41,19 +41,23 @@ def create_subdir(preproc_titles):
 
     for item in preproc_titles:
 
-        Path(f'SpecSec\SpecSec{ind+1}').mkdir(parents=True)
+        p_specsec = Path('SpecSec')
+        p_specsec_child = Path(f'SpecSec{ind+1}')
 
-        with open(f'SpecSec/SpecSec{ind+1}/SpecSec{ind+1}_preproc.csv', 'w', newline='', encoding='utf-8') as csv_output:
+        p = Path(p_specsec/p_specsec_child)
+        p.mkdir(parents=True)
+
+        with open(p/f'SpecSec{ind+1}_postproc.csv', 'w', newline='', encoding='utf-8') as csv_output:
             dict_writer = csv.DictWriter(csv_output, keys, delimiter='\t')
             dict_writer.writeheader()
             dict_writer.writerows(preproc_titles[ind])
 
         ind += 1
 
-# Creazione di un eseguibile .bat per l'esecuzione del postprocessamento degli abstract e di LDA per ogni Special Section
+""" # Creazione di un eseguibile .bat per l'esecuzione del postprocessamento degli abstract e di LDA per ogni Special Section
 def create_bat(dim):
 
-    slrkitpath = r'set SLRKITPATH=Inserire il percorso di slr-kit presente sul proprio pc' + '\n\n'
+   slrkitpath = r'set SLRKITPATH=Inserire il percorso di slr-kit presente sul proprio pc' + '\n\n'
     command = slrkitpath
     postproc = ''
     lda = ''
@@ -65,19 +69,19 @@ def create_bat(dim):
     command += postproc + '\n' + lda
 
     with open('run_all_process.bat', 'w', encoding='utf-8') as bat_file:
-        bat_file.write(command)
+        bat_file.write(command) """
 
 def main():
     parser = argparse.ArgumentParser()
 
     parser.add_argument('spec_sec_csv', type=str, help='file csv contenente articoli e nomi delle Special Section')
-    parser.add_argument('preproc_file', type=str, help='file csv contenente gli articoli preprocessati di tutte le Special Section')
+#    parser.add_argument('preproc_file', type=str, help='file csv contenente gli articoli preprocessati di tutte le Special Section')
     args = parser.parse_args()
 
     titles = titles_partition(args.spec_sec_csv)
-    preproc_titles_partition = preproc_partition(titles, args.preproc_file)
+    preproc_titles_partition = preproc_partition(titles, args.spec_sec_csv)
     create_subdir(preproc_titles_partition)
-    create_bat(len(preproc_titles_partition))
+#    create_bat(len(preproc_titles_partition))
 
 if __name__ == '__main__':
     main()

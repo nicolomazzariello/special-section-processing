@@ -8,7 +8,7 @@ import networkx as nx
 # Lettura del file csv con gli articoli postprocessati
 def read_csv(path):
 
-    with open(str.format(*glob.glob(os.path.join(path, path.split('\\')[-1] + '_postproc.csv'))), 'r', encoding='utf-8') as input_file:
+    with open(str.format(*glob.glob(os.path.join(path, path.split('/')[-1] + '_postproc.csv'))), 'r', encoding='utf-8') as input_file:
         csv_reader = csv.DictReader(input_file, delimiter='\t')
 
         doc = []
@@ -49,7 +49,7 @@ def create_graph(nodes, edges, weights, path):
     nx.draw(g, pos, with_labels=True, node_color='orange', node_size=900, edge_color=['red' if weight > 6 else 'blue' for weight in weights])
     a_dict = {a: b for a, b in zip(edges, weights)}
     nx.draw_networkx_edge_labels(g, pos, edge_labels=a_dict)
-    plt.savefig(os.path.join(path, path.split('\\')[-1]+'_graph.png'))
+    plt.savefig(os.path.join(path, path.split('/')[-1]+'_graph.png'))
     plt.clf()
 
 def main():

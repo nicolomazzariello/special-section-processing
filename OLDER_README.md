@@ -1,59 +1,43 @@
 # Content
 
-The scripts in this repository allow the analysis of the abstracts of conference track. (in this README "track" and "Special Section" are used as synonyms)
+The scripts in this repository allow the analysis of the abstracts of the articles of the Special Sections of a scientific journal.
 The abstracts are processed with the [`slr-kit`](https://github.com/robolab-pavia/slr-kit) tool.
 Each script can be run independently of the others.
 The scripts are presented in the order of execution expected during the workflow.
 
-## `cleaningETFACsv.py`
+## `Scopus2csv.py`
 
-Removes papers we are not interested for.
+Converts a CSV file exported from Scopus into a `slr-kit` compatible CSV file.
 
-- INPUT: CSV file containing all papers
-- OUTPUT: CSV file containing the papers we are interested for
+* INPUT: CSV file exported from Scopus
+* OUTPUT: CSV file `slr-kit_abstracts.csv` in `slr-kit` compatible format
 
 Positional arguments:
 
-* `file`: CSV file containing all papers
+* `input_file`: CSV exported from Scopus
 
 Example of usage:
 
 ```
-python3 cleaningETFACsv.py "conference file".csv
-```
-
-## `cleaningINDINCsv.py`
-
-Removes papers we are not interested for.
-
-- INPUT: CSV file containing all papers
-- OUTPUT: CSV file containing the papers we are interested for
-
-Positional arguments:
-
-* `file`: CSV file containing all papers
-
-Example of usage:
-
-```
-python3 cleaningINDINCsv.py "conference file".csv
+python Scopus2csv.py Scopus.csv
 ```
 
 ## `PreprocBySpecSec.py`
 
-Splits the articles postprocessed by `slr-kit` according to the track they belong to.
+Splits the articles preprocessed by `slr-kit` according to the Special Section they belong to.
 
-- INPUT: CSV file containing the items postprocessed by `slr-kit`
-- OUTPUT: set of folders containing the postprocessed articles divided by Special Section
+- INPUT: CSV file containing articles and names of the Special Sections; CSV file containing the items preprocessed by `slr-kit`
+- OUTPUT: set of folders containing the preprocessed articles divided by Special Section; executable file named `run_all_process.bat` to be able to postprocess articles and then LDA (postprocessing and LDA are provided by `slr-kit`)
 
 Positional arguments:
 
-* `spec_sec_csv`: CSV file containing the postprocessed articles of all the Special Sections
+* `spec_sec_csv`: CSV file containing articles and names of the Special Sections
+* `preproc_file`: CSV file containing the preprocessed articles of all the Special Sections
 
 Example of usage:
 
 ```
-python3 PreprocBySpecSec.py "conference name"_postproc.csv
+python PreprocBySpecSec.py Spec_Sec.csv SpecSec_preproc.csv
 ```
 
 ## `SpecSecFake.py`
@@ -75,7 +59,7 @@ Positional arguments:
 Example of usage:
 
 ```
-python3 SpecSecFake.py SpecSec/SpecSec* "conference name"_postproc.csv
+python SpecSecFake.py (Get-ChildItem -Path "SpecSec\SpecSec*").FullName SpecSec_postproc.csv
 ```
 
 ## `SpecSecHist.py`
@@ -92,8 +76,8 @@ Positional arguments:
 Example of usage:
 
 ```
-python3 SpecSecHist.py SpecSec/SpecSec*
-python3 SpecSecHist.py SpecSecFake/SpecSecFake*
+python SpecSecHist.py (Get-ChildItem -Path "SpecSec\SpecSec*").FullName
+python SpecSecHist.py (Get-ChildItem -Path "SpecSecFake\SpecSecFake*").FullName
 ```
 
 ## `SpecSecGraph.py`
@@ -112,8 +96,8 @@ Positional arguments:
 Example of usage:
 
 ```
-python3 SpecSecGraph.py SpecSec/SpecSec*
-python3 SpecSecGraph.py SpecSecFake/SpecSecFake*
+python SpecSecGraph.py (Get-ChildItem -Path "SpecSec\SpecSec*").FullName
+python SpecSecGraph.py (Get-ChildItem -Path "SpecSecFake\SpecSecFake*").FullName
 ```
 
 ## `SpecSecElab.py`
@@ -135,7 +119,7 @@ Positional arguments:
 Example of usage:
 
 ```
-python3 SpecSecElab.py --spec_sec SpecSec/SpecSec* --spec_sec_fake SpecSecFake/SpecSecFake*
+python SpecSecElab.py --spec_sec (Get-ChildItem -Path "SpecSec\SpecSec*").FullName --spec_sec_fake (Get-ChildItem -Path "SpecSecFake\SpecSecFake*").FullName
 ```
 
 ## `SpecSecBoxPlot.py`
@@ -153,7 +137,7 @@ Positional arguments:
 Example of usage:
 
 ```
-python3 SpecSecBoxPlot.py Spec_Sec_metrics.csv Spec_Sec_fake_metrics.csv
+python SpecSecBoxPlot.py Spec_Sec_metrics.csv Spec_Sec_fake_metrics.csv
 ```
 
 ## `SpecSecPlot.py`
@@ -171,56 +155,5 @@ Positional arguments:
 Example of usage:
 
 ```
-python3 SpecSecPlot.py Spec_Sec_metrics.csv Spec_Sec_fake_metrics.csv
-```
-
-## `TrackAsPaper.py`
-
-Merges every paper under a track in a single "track paper" and puts every "track paper" in a CSV file.
-
-* INPUT: folders containing the postprocessed articles divided by Special Section
-* OUTPUT: CSV file called `Biggest_Paper.csv` containing track papers (only 'id' and 'abstract_filtered' columns)
-
-Positional arguments:
-
-* `directories_special_section`: list of Special Section folders
-
-Example of usage:
-
-```
-python3 TrackAsPaper.py SpecSec/SpecSec*
-```
-
-## `TrackCluster.py`
-
-Creates clusters between track papers and an histogram of the intersections between track papers.
-
-* INPUT: CSV file containing track papers generated by `TrackAsPaper.py`
-* OUTPUT: graph named `BiggestPaper_graph.png` and histogram named `intersection_histogram.png`
-
-Positional arguments:
-
-* `file`: CSV file containing track papers
-
-Example of usage:
-
-```
-python3 TrackCluster.py Biggest_Paper.csv
-```
-
-## `matrix.py`
-
-Creates a CSV file which has in the first column every unique words among every track paper and in the others columns the frequency of that word in each track
-
-* INPUT: CSV file containing track papers generated by `TrackAsPaper.py`
-* OUTPUT: CSV file called `matrix.csv` which has in the first column every unique words among every track paper and in the others columns the frequency of that word in each track
-
-Positional arguments:
-
-* `file`: CSV file containing track papers
-
-Example of usage:
-
-```
-python3 matrix.py Biggest_Paper.csv
+python SpecSecPlot.py Spec_Sec_metrics.csv Spec_Sec_fake_metrics.csv
 ```

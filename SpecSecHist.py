@@ -8,12 +8,12 @@ import numpy as np
 # Lettura del file csv contenente gli articoli postprocessati e conteggio del numero di articoli
 def read_csv(path):
 
-    file_path = str.format(*glob.glob(os.path.join(path, path.split('\\')[-1] + '_postproc.csv')))
+    file_path = str.format(*glob.glob(os.path.join(path, path.split('/')[-1] + '_postproc.csv')))
 
     dataframe = pd.read_csv(file_path, delimiter='\t')
     n_row = dataframe.shape[0]
 
-    return path.split('\\')[-1], n_row
+    return path.split('/')[-1], n_row
 
 # Creazione di un istogramma ordinato in senso decrescente in base al numero di articoli
 def create_hist(x, y, file_name):
@@ -41,7 +41,7 @@ def main():
         spec_sec.append(read_csv(dir)[0])
         papers.append(read_csv(dir)[1])
 
-    create_hist(spec_sec, papers, args.directories[0].split('\\')[-2])
+    create_hist(spec_sec, papers, args.directories[0].split('/')[-2])
 
 if __name__ == '__main__':
     main()

@@ -61,7 +61,7 @@ def edges_calc(doc, th):
 def metric_calc(path, th):
     coherence = []
 
-    with open(str.format(*glob.glob(os.path.join(path, path.split('\\')[-1] + '_postproc.csv'))), 'r', encoding='utf-8') as file:
+    with open(str.format(*glob.glob(os.path.join(path, path.split('/')[-1] + '_postproc.csv'))), 'r', encoding='utf-8') as file:
         csv_reader = csv.DictReader(file, delimiter='\t')
 
         doc = []
@@ -84,7 +84,7 @@ def sparsity_calc(papers_real, fake_spec_sec):
 
     num_spec_sec = []
 
-    papers_fake = read_csv(os.path.join(fake_spec_sec, fake_spec_sec.split('\\')[-1] + '_postproc.csv'))
+    papers_fake = read_csv(os.path.join(fake_spec_sec, fake_spec_sec.split('/')[-1] + '_postproc.csv'))
 
     for item in papers_fake:
         for i in range(0, len(papers_real)):
@@ -127,9 +127,9 @@ def main():
     real_spec_sec = []
 
     for dir in args.spec_sec:
-        real_spec_sec.append(read_csv(os.path.join(dir, dir.split('\\')[-1] + '_postproc.csv')))
+        real_spec_sec.append(read_csv(os.path.join(dir, dir.split('/')[-1] + '_postproc.csv')))
         coherence, n_papers = metric_calc(dir, args.th)
-        write_csv('Spec_Sec_metrics.csv', dir.split('\\')[-1], coherence, n_papers)
+        write_csv('Spec_Sec_metrics.csv', dir.split('/')[-1], coherence, n_papers)
 
     real_papers_titles = extract_titles(real_spec_sec)
 
@@ -138,7 +138,7 @@ def main():
     for dir in args.spec_sec_fake:
         coherence, n_papers = metric_calc(dir, args.th)
         consistency = sparsity_calc(real_papers_titles, dir)
-        write_csv('Spec_Sec_fake_metrics.csv', dir.split('\\')[-1], coherence, n_papers, consistency)
+        write_csv('Spec_Sec_fake_metrics.csv', dir.split('/')[-1], coherence, n_papers, consistency)
 
 if __name__ == '__main__':
     main()

@@ -24,9 +24,13 @@ def csv_specsec_fake(papers, ind):
 
         keys = papers[0].keys()
 
-        Path(f'SpecSecFake\SpecSecFake{ind}').mkdir(parents=True)
+        p_specsec = Path('SpecSecFake')
+        p_specsec_child = Path(f'SpecSecFake{ind}')
 
-        with open(f'SpecSecFake/SpecSecFake{ind}/SpecSecFake{ind}_postproc.csv', 'w', newline='', encoding='utf-8') as csv_output:
+        p = Path(p_specsec/p_specsec_child)
+        p.mkdir(parents=True)
+
+        with open(p/f'SpecSecFake{ind}_postproc.csv', 'w', newline='', encoding='utf-8') as csv_output:
             dict_writer = csv.DictWriter(csv_output, keys, delimiter='\t')
             dict_writer.writeheader()
             dict_writer.writerows(papers)
@@ -79,7 +83,7 @@ def main():
         ind_specsec += 1
 
     for item in args.directories_special_section:
-        postproc_by_specsec.append(read_csv(os.path.join(item, item.split('\\')[-1] + '_postproc.csv')))
+        postproc_by_specsec.append(read_csv(os.path.join(item, item.split('/')[-1] + '_postproc.csv')))
 
     for i in range(0, args.fake - ind_specsec + 1):
         create_all_different_fake(postproc_by_specsec, ind_specsec)
