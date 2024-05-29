@@ -95,7 +95,6 @@ def main():
     create_graph(nodes, graph_edges, edges_weights)
 
     #create_intersectionHistogram(intersection_values)
-
-
+    
 if __name__ == '__main__':
     main()
