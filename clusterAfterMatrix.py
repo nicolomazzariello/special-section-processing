@@ -4,6 +4,8 @@ import itertools
 import matplotlib.pyplot as plt
 import networkx as nx
 from cdlib import algorithms, viz
+from scipy.stats import norm
+import statistics
 
 def edges_calc(file):
 
@@ -35,7 +37,7 @@ def edges_calc(file):
 
         intersection_values.append(intersection)
 
-        if intersection > 0:
+        if intersection > 5:
             graph_edges.append((track1, track2))
             edges_weights.append(intersection)
 
@@ -64,6 +66,23 @@ def create_graph(nodes, edges, weights):
     plt.savefig('clusterOnMatrix.png')
     plt.clf()
 
+""" def create_intersectionHistogram(intersection_values):
+
+    mean = statistics.mean(intersection_values)
+    sd = statistics.stdev(intersection_values)
+
+    print(mean, sd)
+
+    mean, sd = norm.fit(intersection_values)
+
+    print(mean, sd)
+
+    plt.hist(intersection_values, density=True, bins=len(intersection_values), alpha=0.5)
+    plt.plot(intersection_values, norm.pdf(intersection_values, mean, sd))
+
+    plt.xlabel('intersections')
+    plt.savefig('after_matrix_intersection_histogram.png')
+    plt.clf() """
 
 def main():
     parser = argparse.ArgumentParser()
@@ -74,6 +93,8 @@ def main():
     name_columns, graph_edges, edges_weights, intersection_values = edges_calc(args.file)
     nodes = nodes_calc(name_columns)
     create_graph(nodes, graph_edges, edges_weights)
+
+    #create_intersectionHistogram(intersection_values)
 
 
 if __name__ == '__main__':
