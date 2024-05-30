@@ -37,7 +37,7 @@ def edges_calc(file):
 
         intersection_values.append(intersection)
 
-        if intersection > 5:
+        if intersection > 6 + 1 * 5: #mean + 1 * sd
             graph_edges.append((track1, track2))
             edges_weights.append(intersection)
 
@@ -66,7 +66,7 @@ def create_graph(nodes, edges, weights):
     plt.savefig('clusterOnMatrix.png')
     plt.clf()
 
-""" def create_intersectionHistogram(intersection_values):
+def create_intersectionHistogram(intersection_values):
 
     mean = statistics.mean(intersection_values)
     sd = statistics.stdev(intersection_values)
@@ -77,12 +77,12 @@ def create_graph(nodes, edges, weights):
 
     print(mean, sd)
 
-    plt.hist(intersection_values, density=True, bins=len(intersection_values), alpha=0.5)
+    plt.hist(intersection_values, density=True, bins=50, alpha=0.5)
     plt.plot(intersection_values, norm.pdf(intersection_values, mean, sd))
 
     plt.xlabel('intersections')
     plt.savefig('after_matrix_intersection_histogram.png')
-    plt.clf() """
+    plt.clf()
 
 def main():
     parser = argparse.ArgumentParser()
@@ -94,7 +94,8 @@ def main():
     nodes = nodes_calc(name_columns)
     create_graph(nodes, graph_edges, edges_weights)
 
-    #create_intersectionHistogram(intersection_values)
+    intersection_values.sort()
+    create_intersectionHistogram(intersection_values)
     
 if __name__ == '__main__':
     main()
