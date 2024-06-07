@@ -63,7 +63,7 @@ def create_graph(nodes, edges, weights):
 
     viz.plot_network_clusters(g, coms, pos, plot_labels=True, node_size=900)
 
-    plt.savefig('clusterOnMatrix.png')
+    plt.savefig('clusterOnMatrix.svg', format="svg")
     plt.clf()
 
 def create_intersectionHistogram(intersection_values):
