@@ -6,6 +6,7 @@ import networkx as nx
 from cdlib import algorithms, viz
 from scipy.stats import norm
 import statistics
+import numpy as np
 
 def intersections(file):
 
@@ -57,6 +58,32 @@ def intersections(file):
 
     return h_dict
 
+def h_index_expert(h_dict):
+    
+    value_list = list(h_dict.values())
+
+    value_list = np.array(value_list)
+    n = value_list.shape[0]
+    array = np.arange(1, n+1)
+    
+    # reverse sorting
+    value_list = np.sort(value_list)[::-1]
+    
+    # intersection of citations and k
+    h_idx = np.max(np.minimum(value_list, array))
+
+    print(h_idx)
+
+    """ da rivedere
+    
+    plt.hist(value_list)
+
+    plt.xlabel('Number of tracks')
+    plt.savefig('h_index.png')
+    plt.clf() """
+    
+    return h_idx
+
 def main():
     parser = argparse.ArgumentParser()
 
@@ -64,6 +91,8 @@ def main():
     args = parser.parse_args()
 
     h_dict = intersections(args.file)
+
+    h_idx = h_index_expert(h_dict)
     
 if __name__ == '__main__':
     main()
