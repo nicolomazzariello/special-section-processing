@@ -74,16 +74,27 @@ def h_index_expert(h_dict):
 
     print(h_idx)
 
-    """ da rivedere
-    
-    plt.hist(value_list)
+    plt.hist(array, bins=45, weights=value_list, ec="black", fc="orange")
+
+    plt.plot(array,value_list, color="green", linestyle="solid")
+
+    """ plt.axhline(y=h_idx, xmin=0, xmax=h_idx, color='b', linestyle='--')
+
+    plt.axvline(x=h_idx, ymin=0, ymax=h_idx, color='b', linestyle='--') """
+
+    plt.plot([0, h_idx], [h_idx, h_idx], color='b', linestyle='--')
+    plt.plot([h_idx, h_idx], [0, h_idx], color='b', linestyle='--')
+
+
+    plt.plot(h_idx, h_idx, color="red", marker="o")
+
+    plt.text(h_idx + 0.5, h_idx + 0.5, h_idx)
 
     plt.xlabel('Number of tracks')
+    plt.ylabel('Intersections')
     plt.savefig('h_index.png')
-    plt.clf() """
+    plt.clf()
     
-    return h_idx
-
 def main():
     parser = argparse.ArgumentParser()
 
@@ -92,7 +103,7 @@ def main():
 
     h_dict = intersections(args.file)
 
-    h_idx = h_index_expert(h_dict)
+    h_index_expert(h_dict)
     
 if __name__ == '__main__':
     main()
