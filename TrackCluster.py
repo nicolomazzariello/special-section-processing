@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 from cdlib import algorithms, viz
 
-# Lettura del file csv con gli articoli postprocessati
+# Lettura del file csv con i Track paper
 def read_csv(file):
 
     with open(file, 'r', encoding='utf-8') as input_file:
@@ -18,7 +18,7 @@ def read_csv(file):
 
     return doc
 
-# Calcolo dei lati e del loro peso (numero di parole in comune tra gli abstract_filtered di due articoli)
+# Calcolo dei lati e del loro peso (numero di parole in comune tra gli abstract_filtered di due Track paper)
 def edges_calc(doc):
     graph_edges = []
     edges_weights = []

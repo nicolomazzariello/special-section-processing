@@ -49,8 +49,10 @@ def count_words_per_track(file, big_cnt, dataFrame):
     track = df['id'].values.tolist()
     text = df['abstract_filtered'].values.tolist()
 
+    # dictionary with track as key and her relative abstract as value (example {track: "text"})
     track_dictionary = {a: b for a, b in zip(track, text)}
 
+    # after the loop the dictionary will be with track as key and a list of words as value (example {track: [word1, word2, ..., word-n]})
     for key in track_dictionary.keys():
 
         words = []
@@ -59,7 +61,7 @@ def count_words_per_track(file, big_cnt, dataFrame):
 
         track_dictionary[key] = words
  
-    cnt_list = []
+    cnt_list = [] # will be a list of counter
 
     for key in track_dictionary.keys():
 
@@ -70,11 +72,14 @@ def count_words_per_track(file, big_cnt, dataFrame):
 
         cnt_list.append(cnt)
 
+    # dictionary with track as key and her relative counter as value (example {track: counter})
     track_counter_dictionary = {a: b for a, b in zip(track, cnt_list)}
 
+    # will be an hash dictionary with number as key and word as value (example {1: word1})
     hash_big_cnt = {}
     c = 0
 
+    # big_cnt is a dictionary with every word of every paper as key and her frequency as value (example {word: frequency})
     for key in big_cnt.keys():
         hash_big_cnt[c] = key
         c+=1
@@ -82,7 +87,7 @@ def count_words_per_track(file, big_cnt, dataFrame):
     for key in track_counter_dictionary.keys():
 
         counter_dict = {}
-        counter_dict = track_counter_dictionary.get(key)
+        counter_dict = track_counter_dictionary.get(key) #to get the counter of a track (a counter is a dictionary)
 
         for i in hash_big_cnt.keys():
 

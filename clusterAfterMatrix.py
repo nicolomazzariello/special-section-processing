@@ -21,6 +21,7 @@ def edges_calc(file):
     for column in name_columns:
         list_columns.append(df[column].tolist())
     
+    # dictionary with track as key and a list of numbers (the frequency of words calculated in the previous script) (example {track: [n1, n2, ..., n-n]})
     dictionary_columns = {a: b for a, b in zip(name_columns, list_columns)}
 
     graph_edges = []

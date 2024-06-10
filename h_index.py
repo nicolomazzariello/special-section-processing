@@ -22,6 +22,7 @@ def intersections(file):
     for column in name_columns:
         list_columns.append(df[column].tolist())
     
+    # dictionary with track as key and a list of numbers (the frequency of words calculated in the previous script) (example {track: [n1, n2, ..., n-n]})
     dictionary_columns = {a: b for a, b in zip(name_columns, list_columns)}
 
     track_pairs = []
@@ -47,8 +48,10 @@ def intersections(file):
     for i in range(len(name_columns)):
         zero_list.append(0)
 
+    # dictionary with track as key and 0 as value (example {track: 0}). this will be a dictionary with track as key and her number of intersection as value
     h_dict = {a: b for a, b in zip(name_columns, zero_list)}
     
+    # dictionary with a tupla of two tracks as key and the number of intersection between this two tracks (example {(track1, track2): number of intersection})
     track_intersection_dict = {a: b for a, b in zip(track_pairs, intersection_without_zero)}
 
     for key in track_intersection_dict.keys():
