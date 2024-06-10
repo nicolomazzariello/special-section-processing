@@ -72,15 +72,13 @@ def h_index_expert(h_dict):
     # intersection of citations and k
     h_idx = np.max(np.minimum(value_list, array))
 
-    print(h_idx)
+    return h_idx, array, value_list
+
+def createImage(h_idx, array, value_list):
 
     plt.hist(array, bins=45, weights=value_list, ec="black", fc="orange")
 
     plt.plot(array,value_list, color="green", linestyle="solid")
-
-    """ plt.axhline(y=h_idx, xmin=0, xmax=h_idx, color='b', linestyle='--')
-
-    plt.axvline(x=h_idx, ymin=0, ymax=h_idx, color='b', linestyle='--') """
 
     plt.plot([0, h_idx], [h_idx, h_idx], color='b', linestyle='--')
     plt.plot([h_idx, h_idx], [0, h_idx], color='b', linestyle='--')
@@ -103,7 +101,9 @@ def main():
 
     h_dict = intersections(args.file)
 
-    h_index_expert(h_dict)
+    h_idx, array, value_list = h_index_expert(h_dict)
+
+    createImage(h_idx, array, value_list)
     
 if __name__ == '__main__':
     main()
