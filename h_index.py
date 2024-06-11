@@ -7,6 +7,7 @@ from cdlib import algorithms, viz
 from scipy.stats import norm
 import statistics
 import numpy as np
+import math
 
 def intersections(file):
 
@@ -58,6 +59,11 @@ def intersections(file):
 
         h_dict[key[0]] = h_dict[key[0]] + track_intersection_dict.get(key)
         h_dict[key[1]] = h_dict[key[1]] + track_intersection_dict.get(key)
+    
+    for key in h_dict.keys():
+        
+        # average of intersections
+        h_dict[key] = round(h_dict.get(key)/len(h_dict))
 
     return h_dict
 
